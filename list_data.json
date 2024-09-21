@@ -1,28 +1,40 @@
 {
 	"movies": [
 		{
-			"Title": "Lost In Translation",
-			"Director": "Sofia Coppola",
+			"Title": "Soul",
+			"Director": "Pete Docter",
+			"Rating": "PG",
+			"Year": "2020"
+		},
+		{
+			"Title": "Inside Out",
+			"Director": "Pete Docter",
+			"Rating": "PG",
+			"Year": "2015"
+		},
+		{
+			"Title": "The Shawshank Redemption",
+			"Director": "Frank Darabont",
 			"Rating": "R",
-			"Year": "2003"
+			"Year": "1994"
 		},
 		{
-			"Title": "Casino Royale",
-			"Director": "Martin Campbell",
-			"Rating": "PG-13",
-			"Year": "2006"
+			"Title": "Oppenheimer",
+			"Director": "Christopher Nolan",
+			"Rating": "R",
+			"Year": "2023"
 		},
 		{
-			"Title": "The Dark Knight",
+			"Title": "Interstellar",
 			"Director": "Christopher Nolan",
 			"Rating": "PG-13",
-			"Year": "2008"
+			"Year": "2014"
 		},
 		{
-			"Title": "The Knight",
-			"Director": "Christopher Nolan",
-			"Rating": "PG-13",
-			"Year": "2008"
+			"Title": "Nomadland",
+			"Director": "Chloé Zhao",
+			"Rating": "R",
+			"Year": "2020"
 		}
 	]
 }
