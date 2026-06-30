@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA DMV Knowledge Test Practice</title>
+<style>
+  :root {
+    --blue: #003F87;
+    --blue-light: #1a5fb4;
+    --gold: #f5a623;
+    --green: #2e7d32;
+    --red: #c62828;
+    --gray: #f5f5f5;
+    --border: #ddd;
+    --text: #212121;
+    --text-light: #555;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f7; color: var(--text); min-height: 100vh; }
+
+  /* ── NAV ── */
+  nav { background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+  nav .logo { font-size: 1.05rem; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; }
+  nav .logo span { background: var(--gold); color: var(--blue); border-radius: 4px; padding: 1px 7px; font-size: .85rem; font-weight: 800; }
+  nav .nav-links { display: flex; gap: 6px; }
+  nav button { background: transparent; border: 1.5px solid rgba(255,255,255,.45); color: #fff; border-radius: 6px; padding: 5px 13px; font-size: .85rem; cursor: pointer; transition: background .2s; }
+  nav button:hover, nav button.active { background: rgba(255,255,255,.18); border-color: #fff; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; max-width: 780px; margin: 0 auto; padding: 24px 16px 60px; }
+  .screen.visible { display: block; }
+
+  /* ── HOME ── */
+  .hero { background: var(--blue); color: #fff; border-radius: var(--radius); padding: 36px 28px; text-align: center; margin-bottom: 24px; }
+  .hero h1 { font-size: 1.65rem; margin-bottom: 8px; }
+  .hero p { opacity: .85; font-size: .97rem; line-height: 1.5; }
+  .hero .badge { display: inline-block; background: var(--gold); color: var(--blue); border-radius: 20px; padding: 3px 14px; font-size: .8rem; font-weight: 700; margin-bottom: 14px; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .card { background: #fff; border-radius: var(--radius); padding: 24px 20px; box-shadow: var(--shadow); cursor: pointer; border: 2px solid transparent; transition: border-color .2s, transform .15s; text-align: center; }
+  .card:hover { border-color: var(--blue-light); transform: translateY(-2px); }
+  .card .icon { font-size: 2.4rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1rem; color: var(--blue); margin-bottom: 6px; }
+  .card p { font-size: .84rem; color: var(--text-light); line-height: 1.4; }
+  .info-bar { background: #fff; border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); margin-top: 20px; font-size: .85rem; color: var(--text-light); display: flex; gap: 20px; flex-wrap: wrap; }
+  .info-bar strong { color: var(--text); }
+
+  /* ── BUTTONS ── */
+  .btn { display: inline-block; padding: 11px 26px; border-radius: 7px; border: none; font-size: .95rem; font-weight: 600; cursor: pointer; transition: background .2s, opacity .2s; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-light); }
+  .btn-secondary { background: #fff; color: var(--blue); border: 2px solid var(--blue); }
+  .btn-secondary:hover { background: #eef2f7; }
+  .btn-gold { background: var(--gold); color: var(--blue); }
+  .btn-gold:hover { opacity: .88; }
+  .btn-sm { padding: 7px 16px; font-size: .82rem; }
+  .btn:disabled { opacity: .45; cursor: default; }
+
+  /* ── QUIZ ── */
+  .quiz-header { background: #fff; border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow); margin-bottom: 18px; }
+  .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: .85rem; color: var(--text-light); }
+  .quiz-meta .q-counter { font-weight: 700; color: var(--blue); font-size: 1rem; }
+  .progress-bar { height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--blue); border-radius: 4px; transition: width .3s; }
+  .quiz-body { background: #fff; border-radius: var(--radius); padding: 24px 22px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .question-text { font-size: 1.05rem; line-height: 1.55; margin-bottom: 22px; font-weight: 500; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: var(--gray); border: 2px solid var(--border); border-radius: 8px; padding: 13px 16px; text-align: left; font-size: .93rem; cursor: pointer; transition: background .15s, border-color .15s; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+  .option-btn:hover:not(:disabled) { background: #e3eaf6; border-color: var(--blue-light); }
+  .option-btn .letter { font-weight: 700; color: var(--blue); min-width: 20px; }
+  .option-btn.correct { background: #e8f5e9; border-color: var(--green); }
+  .option-btn.wrong { background: #ffebee; border-color: var(--red); }
+  .option-btn.reveal { background: #e8f5e9; border-color: var(--green); }
+  .option-btn:disabled { cursor: default; }
+  .feedback { margin-top: 14px; padding: 11px 16px; border-radius: 7px; font-size: .9rem; font-weight: 600; display: none; }
+  .feedback.correct { background: #e8f5e9; color: var(--green); display: block; }
+  .feedback.wrong { background: #ffebee; color: var(--red); display: block; }
+  .quiz-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+  /* ── RESULTS ── */
+  .result-header { background: var(--blue); color: #fff; border-radius: var(--radius); padding: 28px 24px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .result-score { font-size: 3rem; font-weight: 800; }
+  .result-label { font-size: 1.1rem; opacity: .88; margin-top: 4px; }
+  .result-pass { color: #a5d6a7; }
+  .result-fail { color: #ef9a9a; }
+  .result-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: #fff; border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+  .stat-num { font-size: 1.7rem; font-weight: 800; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.gray { color: #888; }
+  .stat-lbl { font-size: .78rem; color: var(--text-light); margin-top: 2px; }
+  .result-section-title { font-weight: 700; color: var(--blue); margin: 20px 0 10px; font-size: 1rem; }
+  .review-item { background: #fff; border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 12px; border-left: 4px solid var(--border); }
+  .review-item.wrong-item { border-left-color: var(--red); }
+  .review-item.correct-item { border-left-color: var(--green); }
+  .review-item.skipped-item { border-left-color: #888; }
+  .review-item .rq { font-size: .95rem; font-weight: 500; margin-bottom: 8px; }
+  .review-item .ra { font-size: .85rem; color: var(--text-light); }
+  .review-item .ra span { font-weight: 600; }
+  .review-item .ra .correct-ans { color: var(--green); }
+  .review-item .ra .wrong-ans { color: var(--red); }
+  .review-item .save-btn { margin-top: 10px; }
+
+  /* ── SAVED / ALL ── */
+  .search-bar { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; width: 100%; font-size: .92rem; margin-bottom: 16px; outline: none; }
+  .search-bar:focus { border-color: var(--blue-light); }
+  .q-list-item { background: #fff; border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
+  .q-list-item:hover { border-color: var(--blue-light); }
+  .q-list-item .q-num { font-size: .78rem; color: var(--text-light); margin-bottom: 4px; }
+  .q-list-item .q-text { font-size: .95rem; font-weight: 500; }
+  .q-detail { background: #fff; border-radius: var(--radius); padding: 22px 20px; box-shadow: var(--shadow); }
+  .q-detail .q-text { font-size: 1.05rem; font-weight: 500; margin-bottom: 18px; line-height: 1.5; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); }
+  .empty-state .ei { font-size: 3rem; margin-bottom: 12px; }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: var(--radius); padding: 28px 24px; max-width: 380px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,.2); text-align: center; }
+  .modal h3 { margin-bottom: 10px; color: var(--blue); }
+  .modal p { font-size: .9rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+
+  /* ── TAGS ── */
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: .73rem; font-weight: 600; margin-left: 8px; }
+  .tag-saved { background: #fff3cd; color: #856404; }
+  .tag-skipped { background: #e9ecef; color: #555; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(3,1fr); }
+    .stat-num { font-size: 1.3rem; }
+    nav .logo { font-size: .9rem; }
+    nav button { padding: 4px 9px; font-size: .78rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>CA</span> DMV Practice Test</div>
+  <div class="nav-links">
+    <button onclick="showScreen('home')" id="nav-home" class="active">Home</button>
+    <button onclick="showScreen('saved')" id="nav-saved">Saved</button>
+    <button onclick="showScreen('all')" id="nav-all">All Q's</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="screen visible" id="screen-home">
+  <div class="hero">
+    <div class="badge">California Class C</div>
+    <h1>DMV Knowledge Test Practice</h1>
+    <p>Prepare for your California driver's license written test with realistic mock exams based on the official CA DMV handbook.</p>
+  </div>
+  <div class="card-grid">
+    <div class="card" onclick="startMockTest()">
+      <div class="icon">📝</div>
+      <h3>Start Mock Test</h3>
+      <p>30 random questions · 83% to pass · Mirrors the real DMV format</p>
+    </div>
+    <div class="card" onclick="showScreen('saved')">
+      <div class="icon">🔖</div>
+      <h3>Review Saved Questions</h3>
+      <p>Study questions you bookmarked during practice tests</p>
+    </div>
+    <div class="card" onclick="showScreen('all')">
+      <div class="icon">📚</div>
+      <h3>All Questions</h3>
+      <p>Browse the full question bank and practice individual questions</p>
+    </div>
+  </div>
+  <div class="info-bar">
+    <div><strong>Questions in bank:</strong> <span id="bank-count">—</span></div>
+    <div><strong>Pass score:</strong> 83% (25 / 30 correct)</div>
+    <div><strong>Saved questions:</strong> <span id="saved-count-home">0</span></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-header">
+    <div class="quiz-meta">
+      <span class="q-counter" id="q-counter">Question 1 / 30</span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="skip-count" style="font-size:.8rem;">Skipped: 0</span>
+        <button class="btn btn-secondary btn-sm" onclick="confirmQuit()">Quit</button>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="quiz-body">
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options-container"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+  <div class="quiz-actions">
+    <button class="btn btn-secondary" id="btn-skip" onclick="skipQuestion()">Skip</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-gold btn-sm" id="btn-save-q" onclick="saveCurrentQuestion()" style="display:none;">🔖 Save</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="result-header">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-label" id="result-label"></div>
+    <div style="margin-top:10px;font-size:.85rem;opacity:.75;" id="result-sub"></div>
+  </div>
+  <div class="result-stats">
+    <div class="stat-card"><div class="stat-num green" id="stat-correct">0</div><div class="stat-lbl">Correct</div></div>
+    <div class="stat-card"><div class="stat-num red" id="stat-wrong">0</div><div class="stat-lbl">Wrong</div></div>
+    <div class="stat-card"><div class="stat-num gray" id="stat-skipped">0</div><div class="stat-lbl">Skipped</div></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+    <button class="btn btn-primary" onclick="startMockTest()">Retake Test</button>
+    <button class="btn btn-secondary" onclick="showScreen('home')">Home</button>
+  </div>
+  <div class="result-section-title">Review Your Answers</div>
+  <div id="results-list"></div>
+</div>
+
+<!-- SAVED -->
+<div class="screen" id="screen-saved">
+  <h2 style="color:var(--blue);margin-bottom:16px;">🔖 Saved Questions</h2>
+  <div id="saved-list"></div>
+</div>
+
+<!-- ALL QUESTIONS -->
+<div class="screen" id="screen-all">
+  <h2 style="color:var(--blue);margin-bottom:12px;">📚 All Questions</h2>
+  <input class="search-bar" type="text" id="search-input" placeholder="Search questions…" oninput="renderAllList()">
+  <div id="all-list"></div>
+</div>
+
+<!-- QUESTION DETAIL (All / Saved drill-down) -->
+<div class="screen" id="screen-qdetail">
+  <button class="btn btn-secondary btn-sm" id="back-btn" onclick="goBack()" style="margin-bottom:16px;">← Back</button>
+  <div class="q-detail">
+    <div class="q-text" id="detail-qtext"></div>
+    <div class="options" id="detail-options"></div>
+    <div class="feedback" id="detail-feedback"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-gold btn-sm" id="detail-save-btn" onclick="toggleSaveDetail()">🔖 Save Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIT MODAL -->
+<div class="modal-overlay" id="quit-modal">
+  <div class="modal">
+    <h3>Quit Test?</h3>
+    <p>Your progress will be lost. Are you sure you want to quit this test?</p>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal()">Keep Going</button>
+      <button class="btn btn-primary" onclick="quitTest()">Quit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// QUESTION BANK
+// ═══════════════════════════════════════════════════════════
+const QUESTIONS = [
+  // ── SPEED LIMITS ──
+  {id:1, text:"What is the speed limit in a residential area unless otherwise posted?", options:["15 mph","25 mph","35 mph","45 mph"], correct:1, topic:"Speed Limits"},
+  {id:2, text:"The maximum speed limit on a two-lane undivided highway in California is:", options:["55 mph","60 mph","65 mph","70 mph"], correct:0, topic:"Speed Limits"},
+  {id:3, text:"What is the speed limit within 500 feet of a school when children are present?", options:["10 mph","15 mph","25 mph","35 mph"], correct:1, topic:"Speed Limits"},
+  {id:4, text:"What is the speed limit in an alley?", options:["10 mph","15 mph","20 mph","25 mph"], correct:1, topic:"Speed Limits"},
+  {id:5, text:"On a freeway, the maximum speed limit for most passenger vehicles is:", options:["55 mph","60 mph","65 mph","70 mph"], correct:2, topic:"Speed Limits"},
+  {id:6, text:"When you are driving near a blind pedestrian who is using a white cane or guide dog, you must:", options:["Slow to 15 mph","Stop until the pedestrian has crossed","Honk to alert the pedestrian","Drive normally but stay alert"], correct:1, topic:"Pedestrians"},
+  {id:7, text:"What is the speed limit in a business district unless otherwise posted?", options:["15 mph","25 mph","30 mph","35 mph"], correct:1, topic:"Speed Limits"},
+  {id:8, text:"You must drive slower than the posted speed limit when:", options:["Passing another vehicle","Traffic is light","Weather or road conditions are hazardous","Driving on a freeway"], correct:2, topic:"Speed Limits"},
+
+  // ── RIGHT OF WAY ──
+  {id:9, text:"At an intersection with no traffic signs or signals, you must yield to:", options:["Vehicles approaching from the left","Vehicles approaching from the right","Pedestrians only","No one — first come, first served"], correct:1, topic:"Right of Way"},
+  {id:10, text:"When two vehicles arrive at a 4-way stop at the same time, you must yield to:", options:["The vehicle on your left","The vehicle on your right","The larger vehicle","The faster vehicle"], correct:1, topic:"Right of Way"},
+  {id:11, text:"You must yield to a pedestrian in a crosswalk:", options:["Only if the light is red","Only if they step off the curb first","At all times","Only at marked crosswalks"], correct:2, topic:"Right of Way"},
+  {id:12, text:"When turning left at an intersection, you must yield to:", options:["Oncoming traffic and pedestrians","Only pedestrians","Only oncoming traffic","No one if you have a green light"], correct:0, topic:"Right of Way"},
+  {id:13, text:"An emergency vehicle with its siren and lights activated approaches while you are driving. You should:", options:["Speed up to get out of the way","Slow down and stop at the nearest intersection","Pull over to the right and stop","Stop immediately wherever you are"], correct:2, topic:"Right of Way"},
+  {id:14, text:"You are driving on a freeway and an emergency vehicle approaches from behind with lights and siren. You should:", options:["Speed up","Move to the right lane and slow down","Stop on the shoulder","Stay in your lane"], correct:1, topic:"Right of Way"},
+  {id:15, text:"When entering a roundabout, you must yield to:", options:["Traffic already in the roundabout","Traffic entering from your right","Traffic entering from your left","No one — enter at your own pace"], correct:0, topic:"Right of Way"},
+  {id:16, text:"A large truck is trying to merge onto the freeway where you are driving. You should:", options:["Maintain your speed","Speed up to pass before the truck","Adjust speed or change lanes to let the truck merge","Honk to warn the truck"], correct:2, topic:"Right of Way"},
+
+  // ── TRAFFIC SIGNS & SIGNALS ──
+  {id:17, text:"A solid yellow line on your side of the center line means:", options:["Pass with caution","No passing is allowed","Pass only if the road is clear","Slow down zone ahead"], correct:1, topic:"Signs & Signals"},
+  {id:18, text:"A flashing yellow light means:", options:["Stop before proceeding","Slow down and proceed with caution","The light is about to turn red","Yield to cross traffic"], correct:1, topic:"Signs & Signals"},
+  {id:19, text:"A flashing red light means:", options:["Stop, then proceed when safe","Slow down","Stop until the light stops flashing","Same as a yellow light"], correct:0, topic:"Signs & Signals"},
+  {id:20, text:"An octagon-shaped sign always means:", options:["Slow down","Yield","Stop","School zone ahead"], correct:2, topic:"Signs & Signals"},
+  {id:21, text:"A triangular sign means:", options:["Stop","Yield","Speed limit","No entry"], correct:1, topic:"Signs & Signals"},
+  {id:22, text:"A yellow diamond-shaped sign warns of:", options:["Speed limit change","Intersection ahead","Possible hazard ahead","Lane ends ahead"], correct:2, topic:"Signs & Signals"},
+  {id:23, text:"What does a white rectangular sign typically indicate?", options:["Warning","Regulatory information","Guide or information","Construction zone"], correct:1, topic:"Signs & Signals"},
+  {id:24, text:"A green arrow shown with a red light means:", options:["Proceed in the direction of the arrow only","Stop and wait for a green light","Yield and proceed in the direction of the arrow","You may make a U-turn"], correct:2, topic:"Signs & Signals"},
+  {id:25, text:"What does a double solid yellow center line mean?", options:["Passing allowed from both sides","No passing from either direction","Passing allowed when safe","Bike lane divider"], correct:1, topic:"Signs & Signals"},
+  {id:26, text:"Railroad crossings are indicated by what shape of sign?", options:["Octagon","Circle","Diamond","Pentagon"], correct:1, topic:"Signs & Signals"},
+
+  // ── LANE USAGE ──
+  {id:27, text:"You may drive in a bicycle lane:", options:["At any time","Only to make a turn up to 200 feet before the intersection","When traffic is heavy","To pass a slow vehicle"], correct:1, topic:"Lane Usage"},
+  {id:28, text:"A center left-turn lane (two-way left-turn lane) may be used:", options:["For passing slow vehicles","Only by buses","To prepare for and make left turns","As a travel lane when your lane is blocked"], correct:2, topic:"Lane Usage"},
+  {id:29, text:"When can you drive in a lane marked with a diamond symbol (HOV lane)?", options:["At any time","Only when the posted speed is over 65 mph","When carrying the required number of passengers","When the regular lanes are congested"], correct:2, topic:"Lane Usage"},
+  {id:30, text:"When changing lanes on a freeway, you should:", options:["Swerve quickly","Check mirrors, signal, check blind spot, then change","Signal first, then check mirrors","Only check the rearview mirror"], correct:1, topic:"Lane Usage"},
+  {id:31, text:"On a road with four or more lanes with traffic moving in opposite directions, you should drive:", options:["In the left lane","In the right lane except to pass","In whichever lane is fastest","In the center lane"], correct:1, topic:"Lane Usage"},
+  {id:32, text:"You must use your turn signal at least _____ before making a turn on a highway.", options:["100 feet","200 feet","300 feet","500 feet"], correct:1, topic:"Lane Usage"},
+
+  // ── PARKING ──
+  {id:33, text:"How far from a fire hydrant must you park?", options:["10 feet","15 feet","20 feet","25 feet"], correct:1, topic:"Parking"},
+  {id:34, text:"You may not park within _____ of a railroad crossing.", options:["7.5 feet","15 feet","25 feet","50 feet"], correct:1, topic:"Parking"},
+  {id:35, text:"When parallel parking on a hill facing downhill, you should turn your front wheels:", options:["Away from the curb","Toward the curb","Straight ahead","To the left"], correct:1, topic:"Parking"},
+  {id:36, text:"When parallel parking on a hill facing uphill with a curb, you should turn your front wheels:", options:["Away from the curb","Toward the curb","Straight ahead","To the right"], correct:0, topic:"Parking"},
+  {id:37, text:"Which color curb indicates no stopping, standing, or parking at any time?", options:["Yellow","White","Red","Blue"], correct:2, topic:"Parking"},
+  {id:38, text:"A blue painted curb means:", options:["No parking anytime","Parking for disabled persons with proper placard or plates only","Loading zone for passengers","30-minute parking"], correct:1, topic:"Parking"},
+  {id:39, text:"How far from a crosswalk at an intersection must you park?", options:["10 feet","15 feet","20 feet","25 feet"], correct:2, topic:"Parking"},
+  {id:40, text:"You may park in a space reserved for disabled persons if:", options:["You are dropping someone off","You have a valid disabled person placard or plates","You will only be a few minutes","The space has been empty for 10 minutes"], correct:1, topic:"Parking"},
+
+  // ── DUI / ALCOHOL ──
+  {id:41, text:"It is illegal in California to drive with a blood alcohol concentration (BAC) of _____ or more if you are 21 or older.", options:[".04%",".06%",".08%",".10%"], correct:2, topic:"DUI"},
+  {id:42, text:"For drivers under 21, the legal BAC limit is:", options:["0.01%","0.04%","0.06%","0.08%"], correct:0, topic:"DUI"},
+  {id:43, text:"If you are convicted of DUI, you will have your driver's license suspended for a minimum of:", options:["30 days","6 months","1 year","2 years"], correct:1, topic:"DUI"},
+  {id:44, text:"Driving under the influence means your driving is impaired by:", options:["Alcohol only","Illegal drugs only","Alcohol, illegal drugs, OR prescription medications","Fatigue"], correct:2, topic:"DUI"},
+  {id:45, text:"If you refuse to take a chemical test (breath, blood, or urine) when suspected of DUI, your driver's license will be suspended for:", options:["6 months","1 year","18 months","2 years"], correct:1, topic:"DUI"},
+  {id:46, text:"Which factor affects how alcohol is absorbed into your blood?", options:["Amount of sleep","Type of car driven","Amount of food eaten","Height"], correct:2, topic:"DUI"},
+
+  // ── FOLLOWING DISTANCE / SAFETY ──
+  {id:47, text:"The basic rule for following distance is to maintain at least:", options:["1 second","2 seconds","3 seconds","5 seconds"], correct:2, topic:"Safety"},
+  {id:48, text:"When driving behind a large truck, you should increase your following distance because:", options:["Trucks are slower","You need more space to stop and trucks block your view","Trucks have the right of way","Large trucks create wind turbulence"], correct:1, topic:"Safety"},
+  {id:49, text:"Hydroplaning occurs when:", options:["Your tires lose contact with the road due to water","The engine overheats in rain","The steering wheel locks in wet weather","Rain causes the brakes to fail"], correct:0, topic:"Safety"},
+  {id:50, text:"If your car starts to skid, you should:", options:["Brake hard","Steer in the direction the rear is sliding and ease off the gas","Steer away from the skid","Accelerate to regain traction"], correct:1, topic:"Safety"},
+  {id:51, text:"You should check your rearview mirrors:", options:["Every 5–8 seconds","Only when changing lanes","Only when braking","Every 15 seconds"], correct:0, topic:"Safety"},
+  {id:52, text:"Head restraints are designed to protect you from:", options:["Front-end collisions","Whiplash in rear-end collisions","Side-impact collisions","Rollovers"], correct:1, topic:"Safety"},
+  {id:53, text:"California law requires all passengers to wear seat belts if they are:", options:["Under 16 only","Under 18 only","In the front seat only","In any seat"], correct:3, topic:"Safety"},
+  {id:54, text:"Children must be in a rear-facing car seat until they are at least:", options:["1 year old","2 years old","3 years old","4 years old"], correct:1, topic:"Safety"},
+  {id:55, text:"When should you use your headlights?", options:["Only at night","30 minutes after sunset to 30 minutes before sunrise, and when visibility is less than 1000 feet","Only in rain","Anytime the road is wet"], correct:1, topic:"Safety"},
+  {id:56, text:"You should turn on your headlights when using your windshield wipers:", options:["Always — it is required by law","Only if it is dark","Only if other drivers cannot see you","Never — wipers and headlights are unrelated"], correct:0, topic:"Safety"},
+  {id:57, text:"When is it legal to use your cell phone while driving?", options:["Only with a hands-free device","For texting at red lights","When driving under 25 mph","Never"], correct:0, topic:"Safety"},
+  {id:58, text:"Driving while drowsy is:", options:["Less dangerous than driving drunk","Just as dangerous as driving drunk","Only dangerous at night","Only dangerous on freeways"], correct:1, topic:"Safety"},
+
+  // ── PASSING ──
+  {id:59, text:"You may not pass another vehicle:", options:["On a two-lane highway","When the vehicle ahead is turning left","Within 100 feet of an intersection","On a multilane freeway"], correct:2, topic:"Passing"},
+  {id:60, text:"When is it legal to pass on the right?", options:["When the vehicle ahead is turning left and there is room to pass safely","At any time on a two-lane road","When another driver is going too slow","Never"], correct:0, topic:"Passing"},
+  {id:61, text:"When passing another vehicle, you must return to your lane before coming within _____ of an oncoming vehicle.", options:["100 feet","200 feet","300 feet","500 feet"], correct:2, topic:"Passing"},
+  {id:62, text:"You may pass a school bus that is stopped with red flashing lights only when:", options:["You are on the opposite side of a divided highway with a median or barrier","There are no children visible","You are driving at 25 mph or less","The bus driver waves you by"], correct:0, topic:"Passing"},
+
+  // ── INTERSECTIONS ──
+  {id:63, text:"When making a right turn, you should be in:", options:["The leftmost lane","The center lane","The lane nearest the right curb","Any lane"], correct:2, topic:"Intersections"},
+  {id:64, text:"When making a left turn from a two-way street onto a two-way street, you should end up in:", options:["The far right lane","The center lane","The lane nearest the center line on the right side","Any available lane"], correct:2, topic:"Intersections"},
+  {id:65, text:"You may turn right on a red light:", options:["Never","After yielding to cross traffic and pedestrians, unless a sign prohibits it","Only if no sign says you cannot","Both B and C are correct"], correct:3, topic:"Intersections"},
+  {id:66, text:"What should you do if you miss your exit on a freeway?", options:["Reverse on the freeway shoulder","Make a U-turn","Continue to the next exit","Stop and wait for traffic to clear"], correct:2, topic:"Intersections"},
+
+  // ── ROAD CONDITIONS ──
+  {id:67, text:"When driving in fog, you should use:", options:["High beams","Low beams","Hazard lights only","No lights — they reduce visibility"], correct:1, topic:"Road Conditions"},
+  {id:68, text:"When driving on a slippery road, you should:", options:["Accelerate quickly","Brake suddenly to test traction","Drive slowly and leave extra following distance","Use cruise control to keep steady speed"], correct:2, topic:"Road Conditions"},
+  {id:69, text:"If your brakes fail, you should first try:", options:["Pumping the brake pedal rapidly","Turning off the engine","Shifting to neutral","Pulling the parking brake suddenly"], correct:0, topic:"Road Conditions"},
+  {id:70, text:"If your accelerator gets stuck, you should:", options:["Shift to neutral and brake","Turn off the ignition while driving","Brake firmly while in gear","Pump the gas pedal"], correct:0, topic:"Road Conditions"},
+  {id:71, text:"If you have a tire blowout while driving, you should:", options:["Brake hard immediately","Steer straight, ease off the gas, and brake gently","Swerve to the shoulder immediately","Accelerate to regain control"], correct:1, topic:"Road Conditions"},
+
+  // ── SHARING THE ROAD ──
+  {id:72, text:"When sharing the road with a motorcycle, you should:", options:["Give them the full lane width","Ride close behind so they can draft","Pass quickly in the same lane","Use your horn frequently"], correct:0, topic:"Sharing the Road"},
+  {id:73, text:"How much space should you give a bicycle rider when passing?", options:["1 foot","3 feet","5 feet","The full lane"], correct:1, topic:"Sharing the Road"},
+  {id:74, text:"When a school bus has stopped on the opposite side of a two-lane road with red lights flashing, you must:", options:["Stop","Slow to 25 mph","Continue at normal speed","Slow to 15 mph"], correct:0, topic:"Sharing the Road"},
+  {id:75, text:"Pedestrians have the right of way:", options:["Only in marked crosswalks","Only when the walk signal is shown","At all intersections, whether marked or not","Only when on the sidewalk"], correct:2, topic:"Sharing the Road"},
+  {id:76, text:"You are approaching a crosswalk and a pedestrian starts to cross. You should:", options:["Speed up to clear the crosswalk","Honk to warn the pedestrian","Slow down and stop if necessary","Continue at the same speed"], correct:2, topic:"Sharing the Road"},
+
+  // ── FREEWAY DRIVING ──
+  {id:77, text:"When entering a freeway, you should:", options:["Stop at the end of the on-ramp and wait for a gap","Signal and yield to freeway traffic, match speed, and merge","Come to a slow roll before merging","Always have the right of way over freeway traffic"], correct:1, topic:"Freeway Driving"},
+  {id:78, text:"The best way to avoid a collision with a merging vehicle on the freeway is:", options:["Brake and let the vehicle in","Move to another lane or adjust your speed if safe to do so","Speed up to pass before the merge","Honk your horn"], correct:1, topic:"Freeway Driving"},
+  {id:79, text:"When exiting a freeway, you should:", options:["Slow down before entering the exit lane","Move into the exit lane and then slow down","Brake hard at the exit","Signal only after entering the exit lane"], correct:1, topic:"Freeway Driving"},
+
+  // ── SPECIAL SITUATIONS ──
+  {id:80, text:"If you are involved in a collision and someone is injured, you must:", options:["Leave the scene immediately","Report it to the DMV only","Render reasonable assistance and call for help","Only call the police if damage exceeds $1,000"], correct:2, topic:"Collisions"},
+  {id:81, text:"If a collision involves property damage of $1,000 or more, you must file a report with:", options:["Your insurance company only","The DMV within 10 days","Local police within 24 hours","The city or county"], correct:1, topic:"Collisions"},
+  {id:82, text:"After a collision, you must exchange all of the following EXCEPT:", options:["Driver's license number","Vehicle registration","Social Security Number","Insurance information"], correct:2, topic:"Collisions"},
+  {id:83, text:"It is illegal to leave the scene of a collision in which:", options:["No one is injured","You are the only driver","Someone is injured or killed","Only property is damaged"], correct:2, topic:"Collisions"},
+  {id:84, text:"If you hit an unattended vehicle, you must:", options:["Leave a note with your name and contact info","Drive away if no one saw you","Call 911 only","Report it to the DMV within 10 days"], correct:0, topic:"Collisions"},
+
+  // ── VEHICLE OPERATION ──
+  {id:85, text:"Before backing up, you should:", options:["Check only the rearview mirror","Rely on the backup camera alone","Check all mirrors and look over both shoulders","Honk once to warn others"], correct:2, topic:"Vehicle Operation"},
+  {id:86, text:"Your horn should be used:", options:["To greet friends","When approaching slow traffic","To warn others of danger","When another driver makes a mistake"], correct:2, topic:"Vehicle Operation"},
+  {id:87, text:"Cruise control should NOT be used when:", options:["Driving on the freeway","Driving in light traffic","Roads are wet or slippery","Driving at night"], correct:2, topic:"Vehicle Operation"},
+  {id:88, text:"It is illegal to park in front of a driveway because:", options:["It blocks the fire hydrant","It blocks access for vehicles entering or exiting","It is a tow-away zone","It obstructs vision at the intersection"], correct:1, topic:"Vehicle Operation"},
+
+  // ── NIGHT DRIVING ──
+  {id:89, text:"You should dim your high beams when an oncoming vehicle is within:", options:["100 feet","300 feet","500 feet","1000 feet"], correct:2, topic:"Night Driving"},
+  {id:90, text:"You should dim your high beams when following another vehicle within:", options:["100 feet","200 feet","300 feet","500 feet"], correct:2, topic:"Night Driving"},
+  {id:91, text:"Driving at night requires you to:", options:["Drive faster to reach your destination before fatigue sets in","Drive at the speed your headlights allow you to stop safely within","Always use high beams","Keep interior lights on for visibility"], correct:1, topic:"Night Driving"},
+
+  // ── SPECIAL ZONES ──
+  {id:92, text:"In a construction zone, if a worker is present:", options:["Fines for moving violations are doubled","You must stop and wait","Speed limits are reduced by half","You may pass if the lane is clear"], correct:0, topic:"Special Zones"},
+  {id:93, text:"In a school zone, you must stop for a school crossing guard:", options:["Only if a child is crossing","Only during school hours","Whenever the guard signals you to stop","Only if the lights are flashing"], correct:2, topic:"Special Zones"},
+  {id:94, text:"You are approaching a railroad crossing with no signals. You should:", options:["Stop and look both ways","Slow down and be prepared to stop if a train is visible","Cross quickly","Sound your horn before crossing"], correct:1, topic:"Special Zones"},
+  {id:95, text:"You must stop before a railroad crossing whenever:", options:["A signal is flashing","A gate is lowered","A train is approaching or is at the crossing","All of the above"], correct:3, topic:"Special Zones"},
+
+  // ── MISC ──
+  {id:96, text:"To avoid highway hypnosis on long drives, you should:", options:["Drive faster","Keep your eyes moving and take breaks","Use cruise control at all times","Listen to loud music"], correct:1, topic:"Safety"},
+  {id:97, text:"When driving in a heavy rainstorm, you should turn on:", options:["High beams","Low beams","Hazard lights","No lights are required"], correct:1, topic:"Road Conditions"},
+  {id:98, text:"What is the first thing you should do if your car becomes disabled on a freeway?", options:["Walk to an emergency call box","Try to push it to the next exit","Pull completely off the road onto the shoulder","Turn on hazard lights and stay in the car"], correct:2, topic:"Safety"},
+  {id:99, text:"If you are driving and suddenly feel very sleepy, you should:", options:["Open the window for fresh air","Drink coffee and keep driving","Pull off the road and rest","Turn on the radio loudly"], correct:2, topic:"Safety"},
+  {id:100, text:"You must notify the DMV within 5 days if you:", options:["Move to a new address","Get a parking ticket","Receive a speeding warning","Loan your car to a friend"], correct:0, topic:"Vehicle Operation"},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let savedIds = JSON.parse(localStorage.getItem('dmv_saved') || '[]');
+let quiz = { questions:[], current:0, answers:[], skipped:[] };
+let detailFrom = 'all';
+let detailQid = null;
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+  document.getElementById('screen-' + id).classList.add('visible');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById('nav-' + id);
+  if (nb) nb.classList.add('active');
+  if (id === 'saved') renderSaved();
+  if (id === 'all') renderAllList();
+  if (id === 'home') updateHomeStats();
+}
+
+function goBack() {
+  showScreen(detailFrom);
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME STATS
+// ═══════════════════════════════════════════════════════════
+function updateHomeStats() {
+  document.getElementById('bank-count').textContent = QUESTIONS.length;
+  document.getElementById('saved-count-home').textContent = savedIds.length;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOCK TEST
+// ═══════════════════════════════════════════════════════════
+function startMockTest() {
+  const shuffled = [...QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 30);
+  quiz = { questions: shuffled, current: 0, answers: new Array(30).fill(null), skipped: [] };
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quiz.questions[quiz.current];
+  const n = quiz.current;
+  document.getElementById('q-counter').textContent = `Question ${n+1} / ${quiz.questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(n / quiz.questions.length)*100}%`;
+  document.getElementById('skip-count').textContent = `Skipped: ${quiz.skipped.length}`;
+  document.getElementById('question-text').textContent = q.text;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}.</span><span>${opt}</span>`;
+    btn.onclick = () => selectOption(i);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('btn-next').disabled = true;
+  document.getElementById('btn-skip').style.display = '';
+  document.getElementById('btn-save-q').style.display = 'none';
+
+  // If already answered (coming back to show review), restore
+  if (quiz.answers[n] !== null) {
+    displayAnswer(quiz.answers[n], q.correct, q);
+  }
+}
+
+function selectOption(chosen) {
+  const q = quiz.questions[quiz.current];
+  if (quiz.answers[quiz.current] !== null) return;
+  quiz.answers[quiz.current] = chosen;
+  // Remove from skipped if it was skipped
+  quiz.skipped = quiz.skipped.filter(i => i !== quiz.current);
+  displayAnswer(chosen, q.correct, q);
+}
+
+function displayAnswer(chosen, correct, q) {
+  const btns = document.querySelectorAll('#options-container .option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[correct].classList.add('correct');
+  if (chosen !== correct) {
+    btns[chosen].classList.add('wrong');
+    document.getElementById('feedback').className = 'feedback wrong';
+    document.getElementById('feedback').textContent = '✗ Incorrect. The correct answer is highlighted in green.';
+  } else {
+    document.getElementById('feedback').className = 'feedback correct';
+    document.getElementById('feedback').textContent = '✓ Correct!';
+  }
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('btn-save-q').style.display = '';
+  updateSaveBtn(q.id, 'btn-save-q');
+}
+
+function skipQuestion() {
+  const n = quiz.current;
+  if (!quiz.skipped.includes(n)) quiz.skipped.push(n);
+  quiz.answers[n] = 'skipped';
+  nextQuestion();
+}
+
+function nextQuestion() {
+  quiz.current++;
+  if (quiz.current >= quiz.questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function saveCurrentQuestion() {
+  const q = quiz.questions[quiz.current];
+  toggleSave(q.id);
+  updateSaveBtn(q.id, 'btn-save-q');
+}
+
+function confirmQuit() {
+  document.getElementById('quit-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('quit-modal').classList.remove('open');
+}
+function quitTest() {
+  closeModal();
+  showScreen('home');
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════════════════
+function showResults() {
+  const qs = quiz.questions;
+  const ans = quiz.answers;
+  let correct = 0, wrong = 0, skipped = 0;
+  ans.forEach((a,i) => {
+    if (a === 'skipped') skipped++;
+    else if (a === qs[i].correct) correct++;
+    else wrong++;
+  });
+  const pct = Math.round((correct / qs.length) * 100);
+  const passed = correct >= 25;
+
+  document.getElementById('result-score').textContent = `${pct}%`;
+  document.getElementById('result-label').className = 'result-label ' + (passed ? 'result-pass' : 'result-fail');
+  document.getElementById('result-label').textContent = passed ? '✓ PASS' : '✗ FAIL';
+  document.getElementById('result-sub').textContent = `${correct} of 30 correct · Need 25 to pass`;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-skipped').textContent = skipped;
+
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  qs.forEach((q, i) => {
+    const a = ans[i];
+    const isSkipped = a === 'skipped';
+    const isCorrect = !isSkipped && a === q.correct;
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (isSkipped ? 'skipped-item' : isCorrect ? 'correct-item' : 'wrong-item');
+    const letters = ['A','B','C','D'];
+    const isSaved = savedIds.includes(q.id);
+    div.innerHTML = `
+      <div class="rq"><strong>${i+1}.</strong> ${q.text}</div>
+      <div class="ra">
+        ${isSkipped
+          ? '<span class="tag tag-skipped">Skipped</span>'
+          : isCorrect
+            ? `<span class="correct-ans">✓ Your answer: ${letters[a]}. ${q.options[a]}</span>`
+            : `<span class="wrong-ans">✗ Your answer: ${letters[a]}. ${q.options[a]}</span><br>
+               <span class="correct-ans">✓ Correct: ${letters[q.correct]}. ${q.options[q.correct]}</span>`
+        }
+      </div>
+      <button class="btn btn-gold btn-sm save-btn" id="rsave-${q.id}" onclick="toggleSaveFromResult(${q.id})">${isSaved ? '🔖 Saved' : '🔖 Save'}</button>
+    `;
+    list.appendChild(div);
+  });
+
+  showScreen('results');
+}
+
+function toggleSaveFromResult(id) {
+  toggleSave(id);
+  const btn = document.getElementById('rsave-' + id);
+  if (btn) btn.textContent = savedIds.includes(id) ? '🔖 Saved' : '🔖 Save';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAVED
+// ═══════════════════════════════════════════════════════════
+function renderSaved() {
+  const list = document.getElementById('saved-list');
+  list.innerHTML = '';
+  updateHomeStats();
+  if (savedIds.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="ei">🔖</div><div>No saved questions yet.<br>Save questions during a mock test or from All Questions.</div></div>';
+    return;
+  }
+  savedIds.forEach(id => {
+    const q = QUESTIONS.find(x => x.id === id);
+    if (!q) return;
+    const div = document.createElement('div');
+    div.className = 'q-list-item';
+    div.innerHTML = `<div class="q-num">Q${id} · ${q.topic}</div><div class="q-text">${q.text}</div>`;
+
+    // Show answer inline for saved review
+    const letters = ['A','B','C','D'];
+    const ansDiv = document.createElement('div');
+    ansDiv.style.cssText = 'margin-top:12px;';
+    q.options.forEach((opt,i) => {
+      const row = document.createElement('div');
+      row.style.cssText = `padding:8px 12px;border-radius:6px;margin-bottom:6px;font-size:.88rem;border:2px solid ${i===q.correct?'var(--green)':'var(--border)'};background:${i===q.correct?'#e8f5e9':'#f9f9f9'};`;
+      row.innerHTML = `<strong>${letters[i]}.</strong> ${opt} ${i===q.correct?'<span style="color:var(--green);font-weight:700;">✓ Correct</span>':''}`;
+      ansDiv.appendChild(row);
+    });
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn btn-secondary btn-sm';
+    removeBtn.style.marginTop = '10px';
+    removeBtn.textContent = '× Remove';
+    removeBtn.onclick = (e) => { e.stopPropagation(); toggleSave(id); renderSaved(); };
+    ansDiv.appendChild(removeBtn);
+    div.appendChild(ansDiv);
+    list.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// ALL QUESTIONS
+// ═══════════════════════════════════════════════════════════
+function renderAllList() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const list = document.getElementById('all-list');
+  list.innerHTML = '';
+  const filtered = QUESTIONS.filter(x => x.text.toLowerCase().includes(q) || x.topic.toLowerCase().includes(q));
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div>No questions matched your search.</div></div>';
+    return;
+  }
+  filtered.forEach(x => {
+    const div = document.createElement('div');
+    div.className = 'q-list-item';
+    const saved = savedIds.includes(x.id);
+    div.innerHTML = `<div class="q-num">Q${x.id} · ${x.topic}${saved?'<span class="tag tag-saved">Saved</span>':''}</div><div class="q-text">${x.text}</div>`;
+    div.onclick = () => openDetail(x.id, 'all');
+    list.appendChild(div);
+  });
+}
+
+function openDetail(qid, from) {
+  detailFrom = from;
+  detailQid = qid;
+  const q = QUESTIONS.find(x => x.id === qid);
+  document.getElementById('detail-qtext').textContent = q.text;
+  const container = document.getElementById('detail-options');
+  container.innerHTML = '';
+  document.getElementById('detail-feedback').className = 'feedback';
+  document.getElementById('detail-feedback').textContent = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}.</span><span>${opt}</span>`;
+    btn.onclick = () => {
+      document.querySelectorAll('#detail-options .option-btn').forEach(b => b.disabled = true);
+      document.querySelectorAll('#detail-options .option-btn')[q.correct].classList.add('correct');
+      if (i !== q.correct) {
+        btn.classList.add('wrong');
+        document.getElementById('detail-feedback').className = 'feedback wrong';
+        document.getElementById('detail-feedback').textContent = '✗ Incorrect. The correct answer is highlighted.';
+      } else {
+        document.getElementById('detail-feedback').className = 'feedback correct';
+        document.getElementById('detail-feedback').textContent = '✓ Correct!';
+      }
+    };
+    container.appendChild(btn);
+  });
+  updateSaveBtn(qid, 'detail-save-btn');
+  showScreen('qdetail');
+}
+
+function toggleSaveDetail() {
+  toggleSave(detailQid);
+  updateSaveBtn(detailQid, 'detail-save-btn');
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAVE HELPERS
+// ═══════════════════════════════════════════════════════════
+function toggleSave(id) {
+  if (savedIds.includes(id)) {
+    savedIds = savedIds.filter(x => x !== id);
+  } else {
+    savedIds.push(id);
+  }
+  localStorage.setItem('dmv_saved', JSON.stringify(savedIds));
+  updateHomeStats();
+}
+
+function updateSaveBtn(id, btnId) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.textContent = savedIds.includes(id) ? '🔖 Saved' : '🔖 Save';
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+updateHomeStats();
+</script>
+</body>
+</html>
