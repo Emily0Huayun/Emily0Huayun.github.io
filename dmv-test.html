@@ -246,14 +246,19 @@
 
 <!-- QUESTION DETAIL -->
 <div class="screen" id="screen-qdetail">
-  <button class="btn btn-secondary btn-sm" onclick="goBack()" style="margin-bottom:16px;">← Back</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <button class="btn btn-secondary btn-sm" onclick="goBack()">← Back</button>
+    <span id="detail-counter" style="font-size:.85rem;color:var(--text-light);"></span>
+    <button class="btn btn-primary btn-sm" id="btn-next-q" onclick="nextDetail()">Next →</button>
+  </div>
   <div class="q-detail">
     <div id="detail-src" style="margin-bottom:8px;"></div>
     <div class="q-text" id="detail-qtext"></div>
     <div class="options" id="detail-options"></div>
     <div class="feedback" id="detail-feedback"></div>
-    <div style="margin-top:14px;">
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="btn btn-gold btn-sm" id="detail-save-btn" onclick="toggleSaveDetail()">🔖 Save Question</button>
+      <button class="btn btn-primary btn-sm" onclick="nextDetail()">Next Question →</button>
     </div>
   </div>
 </div>
@@ -887,6 +892,7 @@ let attempts = JSON.parse(localStorage.getItem('dmv_attempts') || '0');
 let quiz = { questions:[], current:0, answers:[], skipped:[] };
 let detailFrom = 'all';
 let detailQid = null;
+let detailList = [];
 const TOTAL_Q = 36;
 const PASS_Q = 30;
 const MAX_ATTEMPTS = 3;
@@ -1146,14 +1152,20 @@ function renderAllList() {
       <div class="q-num">${srcBadge(x.src)} ${x.topic}${saved?'<span class="tag tag-saved">Saved</span>':''}</div>
       <div class="q-text">${x.text}</div>
     `;
-    div.onclick = () => openDetail(x.id, 'all');
+    div.onclick = () => openDetail(x.id, 'all', filtered.map(q => q.id));
     list.appendChild(div);
   });
 }
 
-function openDetail(qid, from) {
+function nextDetail() {
+  const idx = detailList.indexOf(detailQid);
+  if (idx < detailList.length - 1) openDetail(detailList[idx + 1], detailFrom);
+}
+
+function openDetail(qid, from, list) {
   detailFrom = from;
   detailQid = qid;
+  if (list) detailList = list;
   const q = QUESTIONS.find(x => x.id === qid);
   document.getElementById('detail-src').innerHTML = srcBadge(q.src) + ' <span style="font-size:.8rem;color:var(--text-light);">' + q.topic + '</span>';
   document.getElementById('detail-qtext').textContent = q.text;
@@ -1182,6 +1194,11 @@ function openDetail(qid, from) {
     container.appendChild(btn);
   });
   updateSaveBtn(qid, 'detail-save-btn');
+  const idx = detailList.indexOf(qid);
+  const hasNext = idx >= 0 && idx < detailList.length - 1;
+  document.getElementById('detail-counter').textContent = idx >= 0 ? `${idx + 1} / ${detailList.length}` : '';
+  document.getElementById('btn-next-q').style.display = hasNext ? '' : 'none';
+  document.querySelectorAll('#screen-qdetail .btn-primary').forEach(b => { if (b.id !== 'btn-next-q') b.style.display = hasNext ? '' : 'none'; });
   showScreen('qdetail');
 }
 
